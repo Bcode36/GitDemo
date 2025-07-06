@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ExploreEase</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        input, button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover {
+            color: red;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="register.html">Register</a></p>
+        <p><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
+    </form>
+</div>
+
+<!-- Forgot Password Modal -->
+<div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Forgot Password</h3>
+        <input type="text" id="forgotUsername" placeholder="Enter your username" required>
+        <button onclick="recoverPassword()">Recover Password</button>
+        <p id="recoveryMessage"></p>
+    </div>
+</div>
+
+<script>
+    // Handle Login
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        let username = document.getElementById('loginUsername').value;
+        let password = document.getElementById('loginPassword').value;
+        let storedUser = localStorage.getItem(username);
+
+        if (storedUser && JSON.parse(storedUser).password === password) {
+            alert('Login Successful!');
+            
+            // Store session info
+            sessionStorage.setItem("loggedInUser", username);
+            
+            // Redirect to Home Page
+            window.location.href = "home.html";
+        } else {
+            alert('User not registered or incorrect password.');
+        }
+    });
+
+    // Handle Forgot Password Modal
+    let modal = document.getElementById("forgotPasswordModal");
+    let forgotLink = document.getElementById("forgotPasswordLink");
+    let closeBtn = document.querySelector(".close");
+
+    forgotLink.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Recover Password Function
+    function recoverPassword() {
+        let username = document.getElementById('forgotUsername').value;
+        let storedUser = localStorage.getItem(username);
+
+        if (storedUser) {
+            let userData = JSON.parse(storedUser);
+            document.getElementById('recoveryMessage').innerText = `Your password is: ${userData.password}`;
+        } else {
+            document.getElementById('recoveryMessage').innerText = "Username not found.";
+        }
+    }
+</script>
+
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ExploreEase</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Style for the forgot password modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            border-radius: 8px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        input, button {
+            display: block;
+            width: 80%;
+            margin: 10px auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="register.html">Register</a></p>
+        <p><a href="#" id="forgotPasswordLink">Forgot Password?</a></p>
+    </form>
+</div>
+
+<!-- Modal for Forgot Password -->
+<div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Forgot Password</h3>
+        <input type="text" id="forgotUsername" placeholder="Enter your username" required>
+        <button onclick="recoverPassword()">Recover Password</button>
+        <p id="recoveryMessage"></p>
+    </div>
+</div>
+
+<script>
+    // Handle Login
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        let username = document.getElementById('loginUsername').value;
+        let password = document.getElementById('loginPassword').value;
+        let storedUser = localStorage.getItem(username);
+
+        if (storedUser && JSON.parse(storedUser).password === password) {
+            alert('Login Successful!');
+            window.location.href = "home.html";  // Redirect to Home Page
+        } else {
+            alert('User not registered or incorrect password.');
+        }
+    });
+
+    // Handle Forgot Password Modal
+    let modal = document.getElementById("forgotPasswordModal");
+    let forgotLink = document.getElementById("forgotPasswordLink");
+    let closeBtn = document.querySelector(".close");
+
+    forgotLink.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    // Recover Password Function
+    function recoverPassword() {
+        let username = document.getElementById('forgotUsername').value;
+        let storedUser = localStorage.getItem(username);
+
+        if (storedUser) {
+            let userData = JSON.parse(storedUser);
+            document.getElementById('recoveryMessage').innerText = `Your password is: ${userData.password}`;
+        } else {
+            document.getElementById('recoveryMessage').innerText = "Username not found.";
+        }
+    }
+</script>
+
+</body>
+</html> -->

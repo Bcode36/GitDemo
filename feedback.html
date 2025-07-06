@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .feedback-list {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .feedback-item {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .feedback-item h3 {
+            margin: 0 0 10px;
+            color: #007bff;
+        }
+        .feedback-item p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Customer Feedback</h1>
+
+    <form id="feedbackForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+
+        <!-- <label for="email">Email:</label>
+        <input type="email" id="email" required> -->
+
+        <label for="place">Place Visited:</label>
+        <input type="text" id="place" required>
+
+        <label for="rating">Rating (1 to 5):</label>
+        <input type="number" id="rating" min="1" max="5" required>
+
+        <label for="comments">Comments:</label>
+        <textarea id="comments" rows="4" required></textarea>
+
+        <button type="submit">Submit Feedback</button>
+    </form>
+
+    <h2>Customer Reviews</h2>
+    <div class="feedback-list" id="feedbackList"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const feedbackForm = document.getElementById('feedbackForm');
+            const feedbackList = document.getElementById('feedbackList');
+
+            // Function to display feedback
+            const displayFeedback = () => {
+                feedbackList.innerHTML = '';
+                const feedbackData = JSON.parse(localStorage.getItem('feedbackData')) || [];
+                feedbackData.forEach(feedback => {
+                    const feedbackItem = document.createElement('div');
+                    feedbackItem.className = 'feedback-item';
+                    feedbackItem.innerHTML = `
+                        <h3>${feedback.place}</h3>
+                        <p><strong>Name:</strong> ${feedback.name}</p>
+                        <p><strong>Email:</strong> ${feedback.email}</p>
+                        <p><strong>Rating:</strong> ${'★'.repeat(feedback.rating)}${'☆'.repeat(5 - feedback.rating)}</p>
+                        <p><strong>Comments:</strong> ${feedback.comments}</p>
+                    `;
+                    feedbackList.appendChild(feedbackItem);
+                });
+            };
+
+            // Load and display feedback on page load
+            displayFeedback();
+
+            // Handle form submission
+            feedbackForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const place = document.getElementById('place').value.trim();
+                const rating = parseInt(document.getElementById('rating').value);
+                const comments = document.getElementById('comments').value.trim();
+
+                if (name && email && place && rating && comments) {
+                    const newFeedback = { name, email, place, rating, comments };
+                    const feedbackData = JSON.parse(localStorage.getItem('feedbackData')) || [];
+                    feedbackData.push(newFeedback);
+                    localStorage.setItem('feedbackData', JSON.stringify(feedbackData));
+
+                    // Clear form fields
+                    feedbackForm.reset();
+
+                    // Update feedback display
+                    displayFeedback();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Feedback Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        .feedback-list {
+            margin-top: 40px;
+            max-width: 600px;
+            margin: 40px auto 0;
+        }
+        .feedback-item {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .feedback-item .rating {
+            color: #ffcc00;
+        }
+        .feedback-item .comment {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Customer Feedback Form</h1>
+
+    <form id="feedbackForm">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="place">Place Visited:</label>
+        <select id="place" name="place" required>
+            <option value="Khajuraho Group of Monuments">Khajuraho Group of Monuments</option>
+            <option value="Bandhavgarh National Park">Bandhavgarh National Park</option>
+            <!-- Add more options as needed -->
+        </select>
+
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating" required>
+            <option value="5">★★★★★</option>
+            <option value="4">★★★★☆</option>
+            <option value="3">★★★☆☆</option>
+            <option value="2">★★☆☆☆</option>
+            <option value="1">★☆☆☆☆</option>
+        </select>
+
+        <label for="comment">Your Feedback:</label>
+        <textarea id="comment" name="comment" rows="4" required></textarea>
+
+        <button type="submit">Submit Feedback</button>
+    </form>
+
+    <div class="feedback-list" id="feedbackList">
+        <!-- User feedback will be displayed here -->
+    </div>
+
+    <script>
+        document.getElementById('feedbackForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const name = document.getElementById('name').value;
+            const place = document.getElementById('place').value;
+            const rating = document.getElementById('rating').value;
+            const comment = document.getElementById('comment').value;
+
+            // Create feedback item
+            const feedbackItem = document.createElement('div');
+           
+::contentReference[oaicite:14]{index=14}
+  -->
